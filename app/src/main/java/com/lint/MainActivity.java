@@ -1,11 +1,9 @@
-package com.leo.customlint;
+package com.lint;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
-
-import top.omooo.customlint.R;
 
 public class MainActivity extends BaseActivity {
 

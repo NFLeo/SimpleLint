@@ -44,25 +44,9 @@ android {
 
 }
 
-//configurations {
-//    lintJarImport
-//}
-
 dependencies {
     lintPublish project(':lintjar')
 }
-
-//task copyLintJar(type: Copy) {
-//    from(configurations.lintJarImport) {
-//        rename { 'lint.jar'}
-//    }
-//    into 'build/intermediates/lint/'
-//}
-//
-//project.afterEvaluate {
-//    def compileLintTask = project.tasks.find { it.name == 'compileLint'}
-//    compileLintTask.dependsOn(copyLintJar)
-//}
 
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"

@@ -1,4 +1,4 @@
-package com.leo.customlint;
+package com.lint;
 
 import android.support.v7.app.AppCompatActivity;
 

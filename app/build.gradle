@@ -5,7 +5,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "top.omooo.customlint"
+        applicationId "com.lint"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 1
@@ -26,11 +26,11 @@ android {
     }
 }
 
-//repositories {
-//    flatDir {
-//        dirs 'libs'
-//    }
-//}
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -41,16 +41,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-    lintChecks project(":lintjar")
-//    implementation (name:'lintaar', ext:'aar')
+//    lintChecks project(":lintjar")
+    implementation(name: 'lintaar', ext: 'aar')
 }
-
-/**
- * 在执行 assembleDebug Task 之前挂载 lintDebug
- */
-//project.afterEvaluate {
-//    def assembleDebugTask = project.tasks.find { it.name == 'assembleDebug' }
-//    def lintTask = project.tasks.find { it.name == 'lintDebug' }
-//    assembleDebugTask.dependsOn(lintTask)
-//}
 

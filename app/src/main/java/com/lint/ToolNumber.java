@@ -1,4 +1,4 @@
-package com.leo.customlint;
+package com.lint;
 
 public class ToolNumber {
 

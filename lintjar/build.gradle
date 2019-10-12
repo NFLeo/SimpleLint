@@ -25,7 +25,3 @@ dependencies {
 }
 
 defaultTasks 'assemble'
-
-//tasks.withType(JavaCompile) {
-//    option.encoding = "UTF-8"
-//}
