@@ -16,7 +16,7 @@ publish {
     userOrg = 'nfleo'
     groupId = 'com.nfleo'
     artifactId = 'SimpleLint'
-    publishVersion = '1.0.0'
+    publishVersion = '1.0.1'
     desc = 'lint your code'
     website = ''
 }

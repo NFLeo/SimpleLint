@@ -30,20 +30,20 @@ import static com.android.tools.lint.client.api.JavaEvaluatorKt.TYPE_INTEGER_WRA
 import static com.android.tools.lint.client.api.JavaEvaluatorKt.TYPE_LONG_WRAPPER;
 
 /**
- * desc：detect is contain parse*，valueOf in java</br>
+ * desc：detect is contain visibility using</br>
  * ignore detect when in try-catch body
  * time: 2019/10/10-11:21</br>
  * author：Leo </br>
  * since V 1.0.0 </br>
  */
-public class ParseCheckDetector extends Detector implements Detector.UastScanner {
+public class VisibilityCheckDetector extends Detector implements Detector.UastScanner {
 
-    private static final String reportMSG = "禁止使用parse类与valueOf方法";
+    private static final String reportMSG = "建议避免使用visibility直接赋值方法";
 
     public static final Issue ISSUE = Issue.create(
-            "ParseUse", "Parse Usage"
-            , "toInt、toDouble", Category.SECURITY, 5, Severity.WARNING
-            , new Implementation(ParseCheckDetector.class, Scope.JAVA_FILE_SCOPE));
+            "VisibilityUse", "Visibility Usage"
+            , "*.visibility =", Category.SECURITY, 5, Severity.WARNING
+            , new Implementation(VisibilityCheckDetector.class, Scope.JAVA_FILE_SCOPE));
 
     @Nullable
     @Override
@@ -75,47 +75,26 @@ public class ParseCheckDetector extends Detector implements Detector.UastScanner
             PsiMethod resolve = node.resolve();
             String className = resolve.getContainingClass().getName();
 
-            if (needDetectInKotlin(node) || className.equals("ToolNumber") || needDetectInJava(context, node)) {
-
-                UTryExpression tryExpression = UastUtils.getParentOfType(node, UTryExpression.class);
-                // try catch not detect
-                if (tryExpression == null) {
-                    String methodName = node.getMethodName();
-                    LintFix lintFix;
-                    if (!className.equals("ToolNumber") && !Lint.isKotlin(node.getSourcePsi())) {
-                        lintFix = LintFix.create().replace()
-                                .text(resolve.getContainingClass().getName())
-                                .with("ToolNumber").build();
-                    } else {
-                        lintFix = LintFix.create().replace()
-                                .text(methodName)
-                                .with(methodName.replace("parse", "to")).build();
-                    }
-
-                    context.report(ISSUE, node, context.getLocation(node), reportMSG, lintFix);
-                }
+            if (needDetectInKotlin(node) || needDetectInJava(node, className)) {
+                String methodName = node.getMethodName();
+                LintFix lintFix;
+                lintFix = LintFix.create().replace()
+                        .text(methodName)
+                        .with(methodName.replace("visibility", "setVisibility")).build();
+                context.report(ISSUE, node, context.getLocation(node), reportMSG, lintFix);
             }
         }
     }
 
-    private boolean needDetect(JavaContext context, PsiMethod resolve) {
-        return context.getEvaluator().isMemberInClass(resolve, TYPE_INTEGER_WRAPPER)
-                || context.getEvaluator().isMemberInClass(resolve, TYPE_DOUBLE_WRAPPER)
-                || context.getEvaluator().isMemberInClass(resolve, TYPE_FLOAT_WRAPPER)
-                || context.getEvaluator().isMemberInClass(resolve, TYPE_LONG_WRAPPER);
-    }
-
     // java类中调用
-    private boolean needDetectInJava(JavaContext context, UCallExpression node) {
+    private boolean needDetectInJava(UCallExpression node, String className) {
         if (Lint.isKotlin(node.getSourcePsi())) {
             return false;
         }
 
-        PsiMethod resolve = node.resolve();
-
         String methodName = node.getMethodName();
-        return needDetect(context, resolve) && !TextUtils.isEmpty(methodName)
-                && (methodName.startsWith("parse") || methodName.equals("valueOf"));
+        return !TextUtils.isEmpty(methodName) && (!className.equals("ToolView")
+                || methodName.equals("setVisibility"));
     }
 
     // kotlin中调用
@@ -125,7 +104,6 @@ public class ParseCheckDetector extends Detector implements Detector.UastScanner
         }
 
         String methodName = node.getMethodName();
-        return "toInt".equals(methodName) || "toFloat".equals(methodName)
-                || "toDouble".equals(methodName) || "toLong".equals(methodName);
+        return "setVisibility".equals(methodName) || "visibility".equals(methodName);
     }
 }

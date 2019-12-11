@@ -9,6 +9,7 @@ import com.android.tools.lint.detector.api.ResourceXmlDetector;
 import com.android.tools.lint.detector.api.Scope;
 import com.android.tools.lint.detector.api.Severity;
 import com.android.tools.lint.detector.api.XmlContext;
+import com.leo.tools.LintTools;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
@@ -20,16 +21,18 @@ import static com.android.SdkConstants.ATTR_NAME;
 import static com.android.SdkConstants.TAG_STRING;
 
 /**
- * desc：检测string.xml文件name是否包含大写</br>
+ * desc：detect string.xml name contain uppercase</br>
  * time: 2019/10/10-11:20</br>
  * author：Leo </br>
  * since V 1.0.0 </br>
  */
 public class StringCheckDetector extends ResourceXmlDetector {
 
+    private static final String reportMSG = "文字资源名称应使用小写命名";
+
     public static final Issue ISSUE = Issue.create(
             "String Uppercase", "please use lowercase"
-            , "please use lowercase", Category.LINT, 5, Severity.ERROR,
+            , "please use lowercase", Category.LINT, 5, Severity.WARNING,
             new Implementation(StringCheckDetector.class, Scope.RESOURCE_FILE_SCOPE));
 
     @Override
@@ -44,28 +47,14 @@ public class StringCheckDetector extends ResourceXmlDetector {
 
     @Override
     public void visitElement(XmlContext context, Element element) {
-
-        final Attr attributeNode = element.getAttributeNode(ATTR_NAME);
+        Attr attributeNode = element.getAttributeNode(ATTR_NAME);
         if (attributeNode != null) {
             final String val = attributeNode.getValue();
-            if (isContainUpperCase(val)) {
+            if (LintTools.isContainUpperCase(val)) {
                 LintFix lintFix = LintFix.create().replace().text(val).with(val.toLowerCase()).build();
                 context.report(ISSUE, attributeNode, context.getLocation(attributeNode),
-                        "please use lowercase", lintFix);
+                        reportMSG, lintFix);
             }
         }
-    }
-
-    private boolean isContainUpperCase(String value) {
-        if (value == null || value.length() == 0) {
-            return false;
-        }
-        for (int i = 0; i < value.length(); i++) {
-            if (Character.isUpperCase(value.charAt(i))) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

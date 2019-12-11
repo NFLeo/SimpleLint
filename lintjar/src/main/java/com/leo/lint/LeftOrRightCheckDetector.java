@@ -38,6 +38,8 @@ import static com.android.SdkConstants.ATTR_PADDING_RIGHT;
  */
 public class LeftOrRightCheckDetector extends ResourceXmlDetector {
 
+    private static final String reportMSG = "请使用Start/End属性替换Left/Right属性";
+
     public static final Issue ISSUE = Issue.create(
             "LeftOrRightInXml", "LeftOrRight Id Named"
             , "replace left right with start end"
@@ -67,8 +69,6 @@ public class LeftOrRightCheckDetector extends ResourceXmlDetector {
                         .replace("Left", "Start")
                         .replace("Right", "End"))
                 .build();
-        context.report(ISSUE, attribute, context.getLocation(attribute)
-                , "replace left/right with start/end in oversea version", lintFix
-        );
+        context.report(ISSUE, attribute, context.getLocation(attribute), reportMSG, lintFix);
     }
 }

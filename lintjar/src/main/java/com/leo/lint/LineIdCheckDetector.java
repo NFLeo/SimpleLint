@@ -22,20 +22,20 @@ import java.util.Collections;
 import static com.android.SdkConstants.VALUE_ID;
 
 /**
- * desc：detect layoutId is contain uppercase char in xml</br>
+ * desc：detect lint layoutId must start with "view" in xml</br>
  * time: 2019/10/10-11:22</br>
  * author：Leo </br>
  * since V 1.0.0 </br>
  */
-public class LayoutIdCheckDetector extends ResourceXmlDetector implements XmlScanner {
+public class LineIdCheckDetector extends ResourceXmlDetector implements XmlScanner {
 
-    private static final String reportMSG = "布局控件Id需小写字母开头，且只含小写字母和下划线";
+    private static final String reportMSG = "分割线布局控件Id需view开头，且只含小写字母和下划线";
 
     public static final Issue ISSUE = Issue.create(
-            "IdNamedInXml", "Id Named",
-            "Id named with lowercase",
+            "LineIdNamedInXml", "Line Id Named",
+            "Line Id named with lowercase",
             Category.LINT, 5, Severity.WARNING,
-            new Implementation(LayoutIdCheckDetector.class, Scope.RESOURCE_FILE_SCOPE)
+            new Implementation(LineIdCheckDetector.class, Scope.RESOURCE_FILE_SCOPE)
     );
 
     @Override
@@ -60,9 +60,12 @@ public class LayoutIdCheckDetector extends ResourceXmlDetector implements XmlSca
 
         // @+id/  substring(5)
         String idName = attribute.getValue().substring(5);
-        if (LintTools.isContainUpperCase(idName) || !LintTools.startWithChar(idName)) {
-            LintFix lintFix = LintFix.create().replace().text(idName)
-                    .with(idName.toLowerCase()).build();
+        if (LintTools.isContainUpperCase(idName)
+                || !LintTools.startWithChar(idName)
+                || !idName.startsWith("view")) {
+
+            String result = "view_" + idName.toLowerCase();
+            LintFix lintFix = LintFix.create().replace().text(idName).with(result).build();
             context.report(ISSUE, attribute, context.getLocation(attribute), reportMSG, lintFix);
         }
     }

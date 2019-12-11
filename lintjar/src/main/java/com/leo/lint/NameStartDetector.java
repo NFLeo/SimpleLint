@@ -26,6 +26,9 @@ import java.util.List;
  */
 public class NameStartDetector extends Detector implements Detector.UastScanner {
 
+    private static final String reportMSG = "Activity、Fragment、DialogFragment类" +
+            "应该以Activity、Fragment、DialogFragment开头命名";
+
     public static final Issue ISSUE = Issue.create(
             "NameStartDetect", "NameStartDetect",
             "Class name should start with Activity、Fragment...",
@@ -53,7 +56,7 @@ public class NameStartDetector extends Detector implements Detector.UastScanner 
             LintFix lintFix = LintFix.create().replace().text(name)
                     .with(replaceName(declaration, name)).build();
             context.report(ISSUE, declaration, context.getNameLocation(declaration)
-                    , "Class name should start with Activity/Fragment", lintFix);
+                    , reportMSG, lintFix);
         }
     }
 

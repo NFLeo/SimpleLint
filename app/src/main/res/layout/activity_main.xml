@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:text="Hello World!"
         android:textSize="10dp"
+        android:gravity="end"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

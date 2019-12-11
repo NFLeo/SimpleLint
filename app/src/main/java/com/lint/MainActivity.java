@@ -5,7 +5,10 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-public class MainActivity extends BaseActivity {
+import com.leo.customlint.ContactAccount;
+import com.leo.customlint.ContractAccount;
+
+public class MainActivity extends BaseActivity implements ContractAccount, ContactAccount {
 
     private static final String TAG = "MainActivity";
     private ImageView mIv;
